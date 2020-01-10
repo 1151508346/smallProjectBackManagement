@@ -5,7 +5,8 @@ import { ALERTUPLOAD,ADDPROCUTIONINFO} from "./mutations.js";
 export default new Vuex.Store({
   state: {
     username:""  , //登录的用户名 ，默认为空
-    productionInfo:null
+    productionInfo:null,
+   
   },
   mutations: {
     [ALERTUPLOAD](state,callback) {

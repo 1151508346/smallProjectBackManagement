@@ -5,14 +5,15 @@
       <span>商品列表</span>
     </div>
     <div class="goods-manage-operate">
-      <!-- <el-row>
-        <el-button size="mini" icon="el-icon-plus" type="primary">添加用户</el-button>
-        <el-button size="mini" icon="el-icon-setting" type="warning">修改用户</el-button>
-        <el-button size="mini" icon="el-icon-delete" type="danger">删除用户</el-button>
-      </el-row>-->
-      <el-button size="mini" icon="el-icon-upload2" type="primary">上传商品</el-button>
-      <el-input size="mini" placeholder="请输入内容" class="input-with-select">
-        <el-button slot="append" icon="el-icon-search" title="搜索"></el-button>
+      <el-button size="mini" icon="el-icon-upload2" type="primary"
+        @click = "uploadGoods"
+      >上传商品</el-button>
+      <el-input size="mini" placeholder="根据商品ID或商品名称" class="input-with-select"
+        v-model="searchContent"
+      >
+        <el-button slot="append" icon="el-icon-search" title="搜索"
+          @click = "handleSearch"
+         ></el-button>
       </el-input>
     </div>
 
@@ -28,11 +29,11 @@
       <el-table-column style="background-color:rgba(50, 67, 93, 1)" type="selection" width="55"></el-table-column>
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="goodsid" label="商品ID" sortable width="100"></el-table-column>
-      <el-table-column prop="goodsname" label="商品名称"  show-overflow-tooltip></el-table-column>
+      <el-table-column prop="goodsname" label="商品名称" show-overflow-tooltip></el-table-column>
       <el-table-column prop="goodscount" label="商品数量" width="80"></el-table-column>
-      <el-table-column prop="goodsprice" label="商品价格" width="80" ></el-table-column>
-      <el-table-column sortable prop="createtime" label="添加日期"  show-overflow-tooltip></el-table-column>
-      <el-table-column prop="typeid" label="分类" width="60"></el-table-column>
+      <el-table-column prop="goodsprice" label="商品价格" width="80"></el-table-column>
+      <el-table-column sortable prop="createtime" label="添加日期" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="typeid" label="分类" width="100"></el-table-column>
       <el-table-column prop="category" label="商品所属类型" width="110" show-overflow-tooltip></el-table-column>
       <el-table-column label="操作" width="160">
         <template slot-scope="scope">
@@ -49,6 +50,7 @@
         background
         layout="prev, pager, next"
         :total="goodsAllCount"
+        :current-page="page"
       ></el-pagination>
     </div>
     <!-- <div style="margin-top: 20px">
@@ -59,6 +61,8 @@
 </template>
 
 <script>
+import UpdateGoodsInfo from "@/components/UpdateGoodsInfo.vue";
+import UploadGoods from "@/components/UploadGoods.vue"
 export default {
   data: function() {
     return {
@@ -66,7 +70,10 @@ export default {
       multipleSelection: [],
       page: 1,
       limit: 10,
-      goodsAllCount: 0
+      goodsAllCount: 0,
+      searchInfo:"",
+      searchContent:"",
+      goodsSort:[]
     };
   },
   mounted() {
@@ -75,6 +82,7 @@ export default {
      */
     var _that = this;
     this.getGoodsAllCount();
+    this.getSort();
   },
   methods: {
     toggleSelection(rows) {
@@ -95,7 +103,11 @@ export default {
       var url = this.$api.getGoodsCount;
       this.request({
         url: url,
-        methods: "GET"
+        method: "GET",
+        params:{
+          searchInfo:_that.searchInfo
+        }
+
       }).then(res => {
         // console.log(res.data);
         if (res.data["count(goodsid)"] > 0) {
@@ -112,16 +124,17 @@ export default {
         methods: "GET",
         params: {
           page: page,
-          limit: _that.limit
+          limit: _that.limit,
+          searchInfo:_that.searchInfo
         }
       })
         .then(res => {
           loading.close();
           res.data.map(item => {
             item.goodsprice = item.goodsprice + "元";
-            item.createtime = new Date(
-              Date.parse(item.createtime)
-            ).toLocaleString();
+            // item.createtime = new Date(
+            //   Date.parse(item.createtime)
+            // ).toLocaleString();
             return item;
           });
           _that.goodsInfoList = res.data;
@@ -133,19 +146,172 @@ export default {
         });
     },
     currentChange(page) {
-      console.log(page);
       var url = this.$api.getGoodsInfo;
-      console.log(this);
+      this.page = page;
       this.initGetGoodsInfo(url, page, this);
     },
     prevClick(page) {
       var url = this.$api.getGoodsInfo;
+      this.page = page;
       this.initGetGoodsInfo(url, page, this);
     },
     nextClick(page) {
       var url = this.$api.getGoodsInfo;
+      this.page = page;
+
       this.initGetGoodsInfo(url, page, this);
+    },
+    handleDelete(index, row) {
+      var _that = this;
+      // console.log(index,row)
+      if (this.multipleSelection.indexOf(row) === -1) {
+        this.$common.alertHint(this, "衣优美服装提醒您", "请选择要删除的一列");
+        return;
+      }
+      // console.log(row.goodsid);
+
+      this.$confirm(
+        "此操作将永久删除该商品信心, 是否继续?",
+        "衣优美服装提醒您",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(() => {
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // });
+
+          var url = this.$api.deleteGoodsInfo;
+          this.request({
+            url: url,
+            method: "GET",
+            params: {
+              goodsid: row.goodsid
+            }
+          })
+            .then(res => {
+              if (res.data.result === "success") {
+                var url = this.$api.getGoodsInfo;
+                _that.initGetGoodsInfo(url, _that.page, _that);
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+              if (res.data.result === "fail") {
+                _this.$message({
+                  type: "info",
+                  message: "删除失败"
+                });
+              }
+            })
+            .catch(err => {});
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+
+      return;
+    },
+    handleEdit(index, row) {
+      var _that = this;
+      // console.log(index, row);
+      if (this.multipleSelection.indexOf(row) === -1) {
+        this.$message({
+          type: "info",
+          message: "请选择指定要编辑的列"
+        });
+        return;
+      }
+      this.$alert(
+        <UpdateGoodsInfo ref="update_goods_info" goodsInfo={{ ...row }} />,
+        "编辑商品",
+        {
+          dangerouslyUseHTMLString: true
+        }
+      )
+        .then(res => {
+          var {
+            goodsname,
+            goodsprice,
+            goodscount,
+            goodsid
+          } = _that.$refs.update_goods_info.$options.propsData.goodsInfo;
+          var { defaultDate } = _that.$refs.update_goods_info.$data;
+          var url = this.$api.updateGoodsInfo;
+          if (
+            goodsname === "" ||
+            goodsprice === "" ||
+            goodscount === "" ||
+            defaultDate === "" || defaultDate === null
+          ) {
+            _that.$common.alertHint(_that, "衣优美服装提醒您", "请完善信息");
+            return;
+          }
+          _that.request({
+            url: url,
+            method: "POST",
+            data: {
+              goodsname:goodsname,
+              goodsprice:goodsprice,
+              goodscount:goodscount,
+              goodsid:goodsid,
+              createtime: defaultDate
+            }
+          }).then(res=>{
+            if(res.data.result === 'success'){
+              _that.$common.alertHint(_that,"衣优美服装提醒您","修改商品数据成功");
+                var url = this.$api.getGoodsInfo;
+              _that.initGetGoodsInfo(url,_that.page,_that)
+            }else{
+               _that.$common.alertHint(_that,"衣优美服装提醒您","修改商品数据失败");
+            }
+          }).catch(err=>{
+
+          });
+        })
+        .catch(err => {});
+    },
+    handleSearch(){
+      this.searchInfo = this.searchContent ;
+      this.searchContent = "";
+      var url = this.$api.getGoodsInfo;
+      this.page = 1;
+       this.getGoodsAllCount();
+      this.initGetGoodsInfo(url,this.page,this)
+    },
+    uploadGoods(){
+      var goodsSort = this.goodsSort;
+      this.$alert(<UploadGoods ref= "uploadGoods" goodsSort = {{...goodsSort}}/>,"上传商品", {
+        dangerouslyUseHTMLString: true
+      })
+    },
+    getSort(){
+      var _that = this;
+      this.goodsSort = [];
+      var url = this.$api.getSort
+      this.request({
+        url:url,
+        method:"GET",
+      }).then(res=>{
+         
+          res.data.forEach(item=>{
+            _that.goodsSort.push({
+              value:item.typeid,
+              label:item.typeid
+            })
+          })
+      }).catch(err=>{
+      })
     }
+
   }
 };
 </script>
@@ -159,7 +325,7 @@ export default {
   .goods-manage-operate {
     //   margin-top:20px;
     //   margin-left:20px;
-    padding: 15px 15px;
+    padding: 10px 15px 0px 15px;
     // border: 1px solid red;
     display: flex;
     justify-content: space-between;
@@ -177,7 +343,7 @@ export default {
     }
   }
   .pagination-box {
-    margin-top: 30px;
+    margin-top: 20px;
     text-align: center;
   }
 }

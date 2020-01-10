@@ -40,6 +40,9 @@
 
 <script>
 export default {
+  props:{
+    
+  },
   data: function() {
     return {
       options: [
@@ -68,6 +71,7 @@ export default {
       fileValue: "请选择文档..."
     };
   },
+  
   methods: {
     handleSelectFile(e) {
       var _that = this;

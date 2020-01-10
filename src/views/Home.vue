@@ -48,7 +48,7 @@ export default {
           }
           if (res.data.result === "fail") {
             _that.$router.push({
-              path: "/login"
+              // path: "/login"
             });
           }
         })
@@ -57,7 +57,7 @@ export default {
         });
     } else {
       this.$router.push({
-        path: "/login"
+        // path: "/login"
       });
     }
   },

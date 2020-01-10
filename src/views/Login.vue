@@ -1,5 +1,5 @@
 <template>
-  <div id="login-container" class="login-container">
+  <div id="login-container" ref="loginContainer" class="login-container">
     <div class="login-box">
       <div class="login-common-item login-title">
         <div class="login-logo-box">
@@ -45,7 +45,10 @@ export default {
     };
   },
   created() {},
-  mounted: function() {},
+  mounted: function() {
+    var _that = this;
+    document.addEventListener("keydown",this.addEnterKeyDown);
+  },
   methods: {
     submitUserInfo(){
       var _that = this;
@@ -62,9 +65,9 @@ export default {
           }).then(res=>{
             // console.log(res)
             if(res.data.result === "success"){
-              _that.$common.alertHint(_that, "优炫软件提醒您", "登录成功");
-              //20分钟过期
-              _that.$common.setCookie("sessionID",res.data.sessionID,20)
+              _that.$common.alertHint(_that, "衣优美服装提醒您", "登录成功");
+              //60分钟过期
+              _that.$common.setCookie("sessionID",res.data.sessionID,60)
               _that.$router.push({
                 path:"/home"
               })
@@ -84,7 +87,16 @@ export default {
         return false;
       }
       return true;
-    }
+    },
+    addEnterKeyDown(e){
+      if(e.keyCode === 13){
+          this.submitUserInfo();
+         }
+      }
+  },
+  //当监听键盘事件完成登录功能时，待组件被销毁时，移除掉绑定在document上的keydown事件
+  destroyed(){
+     document.removeEventListener("keydown",this.addEnterKeyDown);
   }
 };
 </script>

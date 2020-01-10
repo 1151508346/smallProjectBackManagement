@@ -19,7 +19,7 @@ export default {
   methods: {
     handelFunctionOperate(e, param) {
       var _this = this;
-      console.log(param);
+      // console.log(param);
       var _that = this;
       if (param === "upload") {
         /**
@@ -27,9 +27,22 @@ export default {
          * ALERTUPLOAD 定义常量名，type:funtion，
          */
         this.$store.commit(ALERTUPLOAD, function() {
-          _that.$alert(<Upload />, "上传文件", {
-            dangerouslyUseHTMLString: true
-          });
+          var result = _that
+            .$alert(<Upload />, "上传文件", {
+              dangerouslyUseHTMLString: true
+            })
+            .then(res => {
+              // if(res === 'confirm'){
+              //   console.log(res)
+              //   var url = _this.$api.uploadfile;
+              //   _this.request({
+              //     url:url,
+              //     method:"GET",
+              //   }).then(res=>{
+              //     console.log(res);
+              //   })
+              // }
+            });
         });
       }
       if (param === "roleManage") {
@@ -73,7 +86,11 @@ export default {
                   // 提示弹框
                   loading.close();
                   //登录成功的提示框
-                   _this.$common.alertHint(_this,"优炫软件提醒您","密码修改成功");
+                  _this.$common.alertHint(
+                    _this,
+                    "优炫软件提醒您",
+                    "密码修改成功"
+                  );
                 })
                 .catch(function(err) {
                   loading.close();

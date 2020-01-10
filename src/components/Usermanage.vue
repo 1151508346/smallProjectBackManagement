@@ -6,9 +6,24 @@
     </div>
     <div class="user-manage-operate">
       <el-row>
-        <el-button size="mini" icon="el-icon-plus" type="primary">添加用户</el-button>
-        <el-button size="mini" icon="el-icon-setting" type="warning">修改用户</el-button>
-        <el-button size="mini" icon="el-icon-delete" type="danger">删除用户</el-button>
+        <el-button
+          size="mini"
+          icon="el-icon-plus"
+          type="primary"
+          @click="handleOperateUser($event,'add')"
+        >添加用户</el-button>
+        <el-button
+          size="mini"
+          icon="el-icon-setting"
+          type="warning"
+          @click="handleOperateUser($event,'update')"
+        >修改用户</el-button>
+        <!-- <el-button
+          size="mini"
+          icon="el-icon-delete"
+          type="danger"
+          @click="handleOperateUser($event,'delete')"
+        >删除用户</el-button> -->
       </el-row>
     </div>
 
@@ -51,6 +66,8 @@
 </template>
 
 <script>
+import AddUserInfo from "@/components/AddUserInfo.vue";
+import UpdateUserInfo from "@/components/UpdateUserInfo.vue";
 export default {
   data: function() {
     return {
@@ -58,7 +75,9 @@ export default {
       multipleSelection: [],
       page: 1,
       limit: 10,
-      userAllCount: 0
+      userAllCount: 0,
+       searchInfo:"",
+      searchContent:""
     };
   },
   mounted() {
@@ -98,7 +117,7 @@ export default {
       });
     },
     initGetUserInfo(url, page, _that) {
-        var loading = this.$common.loadingHint(_that,"加载中...")
+      var loading = this.$common.loadingHint(_that, "加载中...");
       this.request({
         url: url,
         methods: "GET",
@@ -108,35 +127,225 @@ export default {
         }
       })
         .then(res => {
-          console.log(res);
+          // console.log(res);
           loading.close();
           _that.userInfoList = res.data;
         })
         .catch(err => {
-            loading.close();
+          loading.close();
           console.log(err);
         });
     },
     currentChange(page) {
       console.log(page);
       var url = this.$api.getUserInfo;
+      this.page = page;
       this.initGetUserInfo(url, page, this);
     },
     prevClick(page) {
       var url = this.$api.getUserInfo;
+      this.page = page;
       this.initGetUserInfo(url, page, this);
     },
     nextClick(page) {
+      this.page = page;
       var url = this.$api.getUserInfo;
       this.initGetUserInfo(url, page, this);
-    }
+    },
+    handleOperateUser(e, way) {
+      switch (way) {
+        case "add":
+          this.addUserInfo();
+          break;
+        case "update":
+          this.updateUserInfo();
+          break;
+        // case "delete":
+        //   this.deleteUserInfo();
+          // break;
+        default:
+          break;
+      }
+    },
+    addUserInfo() {
+      var _that = this;
+      this.$alert(<AddUserInfo ref="add_user_info" />, "添加用户", {
+        dangerouslyUseHTMLString: true
+      })
+        .then(res => {
+          if (res === "confirm") {
+            var sexSelect = _that.$refs.add_user_info.$children[0].$data.value;
+            // console.log(sexSelect)
+            var userInfo = _that.$refs.add_user_info.$data.userInfo;
+            for (var item in userInfo) {
+              if (userInfo[item] === "" || sexSelect === "") {
+                _that.$common.alertHint(
+                  _that,
+                  "衣优美服装提醒您",
+                  "请完善信息"
+                );
+                return;
+              }
+            }
+            //发送请求
+            var url = _that.$api.addUserInfo;
+            // console.log(url,_that.userInfo)
+            _that
+              .request({
+                url: url,
+                method: "POST",
+                data: { ...userInfo, sex: sexSelect }
+              })
+              .then(res => {
+                if (res.data.result === "success") {
+                  _that.$common.alertHint(
+                    _that,
+                    "衣优美服装提醒您",
+                    "添加成功"
+                  );
+                  var url = this.$api.getUserInfo;
+                  _that.initGetUserInfo(url, _that.page, _that);
+                }
+                if (res.data.result === "has exit userInfo") {
+                  _that.$common.alertHint(
+                    _that,
+                    "衣优美服装提醒您",
+                    "用户信息已存在"
+                  );
+                }
+                if (res.data.result === "fail") {
+                  _that.$common.alertHint(
+                    _that,
+                    "衣优美服装提醒您",
+                    "添加失败"
+                  );
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        })
+        .catch(err => {});
+    },
+    updateUserInfo() {
+      var _that = this;
+      if (this.multipleSelection.length !== 1) {
+        this.$common.alertHint(this, "衣优美服装提醒您", "请选中一列");
+        return;
+      }
+
+      var userInfoDetail = {
+        userid: this.multipleSelection[0].userid,
+        username: this.multipleSelection[0].username,
+        password: "",
+        avatar: "default",
+        email: "",
+        telphone: "",
+        sex: "",
+        user_address: ""
+      };
+
+      //  console.log(userInfoDetail)
+      this.$alert(
+        <UpdateUserInfo
+          ref="update_user_info"
+          userInfoDetail={{ ...userInfoDetail }}
+        />,
+        "修改用户",
+        {
+          dangerouslyUseHTMLString: true
+        }
+      )
+        .then(res => {
+          if (res === "confirm") {
+            var updatedUserInfo =
+              _that.$refs.update_user_info.$options.propsData.userInfoDetail;
+            var sexSelect =
+              _that.$refs.update_user_info.$children[0].$data.value;
+            updatedUserInfo.sex = sexSelect;
+            // console.log(updatedUserInfo);
+            //发送请求
+            var keys = Object.keys(updatedUserInfo);
+            // console.log(keys)
+
+            for (var i = 0; i < keys.length; i++) {
+              // console.log(updatedUserInfo[keys[i]] === "");
+              if (updatedUserInfo[keys[i]] === "") {
+                _that.$common.alertHint(
+                  _that,
+                  "衣优美服装提醒您",
+                  "请完善信息"
+                );
+                return;
+              }
+            }
+            var url = _that.$api.updateUserInfo;
+            _that
+              .request({
+                url: url,
+                method: "POST",
+                data: {
+                  ...updatedUserInfo
+                }
+              })
+              .then(res => {
+                if (res.data.result === "success") {
+                  var url = _that.$api.getUserInfo;
+
+                  _that.initGetUserInfo(url, _that.page, _that);
+                  _that.$common.alertHint(
+                    _that,
+                    "衣优美服装提醒您",
+                    "修改用户信息成功"
+                  );
+                }
+                if (res.data.result === "warning") {
+                  _that.$common.alertHint(
+                    _that,
+                    "衣优美服装提醒您",
+                    "未更改用户信息"
+                  );
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        })
+        .catch(err => {});
+    },
+    // deleteUserInfo() {
+    //   var useridList = [];
+    //   if (this.multipleSelection.length === 0) {
+    //     this.$common.alertHint(this, "衣优美服装提醒您", "至少选择一列");
+    //     return;
+    //   }
+    //   for (var item of this.multipleSelection) {
+    //     useridList.push({
+    //       userid: item.userid
+    //     });
+    //   }
+    //   var url = this.$api.deleteUserInfo
+    //   this.request({
+    //     url: url,
+    //     method:"POST",
+    //     data: {
+    //       useridList:useridList,
+    //     }
+    //   }).then(data=>{
+    //     console.log(data);
+    //   }).catch(err=>{
+    //     console.log(err);
+    //   });
+    // }
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .user-manage {
-  border: 1px solid red;
+  // border: 1px solid red;
   height: 100%;
   box-sizing: border-box;
   .user-manage-operate {

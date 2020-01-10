@@ -12,14 +12,17 @@
   </el-select>
     </div>-->
     <div class="upload-item-list version">
-      <el-select v-model="value" size="mini" multiple collapse-tags :placeholder="title">
+      <el-select v-model="value" size="mini"
+        @change="changeSelectValue"
+       :multiple="multiple" collapse-tags :placeholder="title"
+       >
         <!-- medium/small/mini -->
 
         <el-option
-          v-for="item in options"
+          v-for="item in params"
           :key="item.value"
           :label="item.label"
-          :value="item.value"
+          :value="item.label"
         ></el-option>
       </el-select>
     </div>
@@ -29,8 +32,14 @@
 
 <script>
 export default {
-  props: ["title"],
-
+  props: ["title","params","multiple","getChildSelectValue"],
+  mounted(){
+    // console.log(this.params);
+   
+  //  if(this.$attrs.defaultSex){
+  //    this.value = this.$attrs.defaultSex;
+  //  }
+  },
   data: function() {
     return {
       options: [
@@ -40,9 +49,16 @@ export default {
         },
         
       ],
-      value: ""
+      value: "",
+      selectValue:""
     };
-  }
+  },
+  methods: {
+    changeSelectValue(params){
+     this.selectValue = params
+    
+    }
+  },
 };
 </script>
 
