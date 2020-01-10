@@ -17,7 +17,9 @@ var URL= {
      deleteOrderData:"/deleteOrderData",
      updateGoodsInfo:"/updateGoodsInfo",
      updateOrderInfo:"/updateOrderInfo",
-     getSort:"/getSort"
+     getSort:"/getSort",
+     getCategoryList:"/getCategoryList",
+     uploadFile:"/uploadFile"
     
 }
 

@@ -9,7 +9,7 @@
         </a>
 
         <div class="hidden-default-style">
-          <input type="file" name id="upload-item-file" />
+          <input type="file" multiple="multiple" name id="upload-item-file" />
           <span>{{fileValue}}</span>
         </div>
       </div>
@@ -22,7 +22,7 @@
       <div :class="usernameStatus? 'feedback-item-list-active':'feedback-item-list'">
         <input
           ref="product"
-          v-model="userInfo.username"
+          v-model="goodsId"
           type="text"
           style="none"
           class="feedback-item-file"
@@ -37,8 +37,8 @@
       <div :class="passwordStatus? 'feedback-item-list-active':'feedback-item-list'">
         <input
           ref="product"
-          v-model="userInfo.password"
-          type="password"
+          v-model="goodsName"
+          type="text"
           style="none"
           class="feedback-item-file"
           placeholder="商品名称"
@@ -66,7 +66,7 @@
       <span class="info-hint">商品数量</span>
       <div :class="emailStatus?'feedback-item-list-active':'feedback-item-list'">
         <input
-          v-model="userInfo.email"
+          v-model="goodsCount"
           type="text"
           style="none"
           class="feedback-item-file"
@@ -80,7 +80,7 @@
       <span class="info-hint">商品价格</span>
       <div :class="telphoneStatus ?'feedback-item-list-active':'feedback-item-list'">
         <input
-          v-model="userInfo.telphone"
+          v-model="goodsPrice"
           type="text"
           style="none"
           class="feedback-item-file"
@@ -106,14 +106,21 @@
     </div>-->
     <div class="feedback-item">
       <span class="info-hint">分类</span>
-      <Select :params="goodsSort" :multiple="false" 
-      ref="sort"
-       />
+      <Select
+        :params="goodsSort"
+        :multiple="false"
+        @getTypeId="getTypeIdByChildComponent"
+        ref="sort"
+      />
     </div>
     <div class="feedback-item">
       <span class="info-hint">所属类别</span>
-      <Select :params="goodsType" :multiple="false" ref="goodsType"
-       />
+      <Select
+        :params="categoryList"
+        :multiple="false"
+        @getCategory="getCategoryByChildComponent"
+        ref="category"
+      />
       <!-- <div :class="sexStatus? 'feedback-item-list-active':'feedback-item-list'">
         <input
           v-model="userInfo.sex"
@@ -126,7 +133,6 @@
         />
       </div>-->
     </div>
-
     <!-- <div class="feedback-item">
       <span class="info-hint">详细描述说明</span>
       <textarea
@@ -193,9 +199,7 @@ export default {
         }
       ],
       value: "",
-      // section: "", //章节
-      // problem: "" //问题描述
-      goodsType: "",
+      categoryList: [],
       sexList: [
         {
           value: "male",
@@ -207,7 +211,14 @@ export default {
         }
       ],
       fileValue: "请选择图片...",
-      selectValue:""
+      selectValue: "",
+      typeId: "", // typeId
+      category: "", //category
+      goodsId: "",
+      goodsName: "",
+      goodsCount: "",
+      goodsPrice: "",
+      formDataInfo:null
     };
   },
   mounted() {},
@@ -234,19 +245,54 @@ export default {
       var _that = this;
       var upload = document.getElementById("upload-item-file");
       upload.onchange = function(e) {
+        var formData = new FormData();
         _that.fileValue = this.value;
+        var fileArr = e.target.files;
+        fileArr.forEach(item => {
+          formData.append("imageList", item,item.name);
+        });
+        _that.formDataInfo = formData;
+        
       };
       upload.click();
     },
-    
-  }
+    getTypeIdByChildComponent(params) {
+      this.typeId = params;
+      this.getCategoryList(this.typeId);
+    },
+    getCategoryByChildComponent(params) {
+      this.category = params;
+    },
+    getCategoryList(typeId) {
+      this.categoryList = [];
+      var _that = this;
+      var url = this.$api.getCategoryList;
+      this.request({
+        url: url,
+        method: "GET",
+        params: {
+          typeid: typeId
+        }
+      })
+        .then(res => {
+          res.data.forEach(item => {
+            _that.categoryList.push({
+              value: item.category,
+              label: item.category
+            });
+          });
+        })
+        .catch(err => {});
+    }
+  },
+ 
 };
 </script>
 
 <style lang="scss" scoped>
 $--color-primary: #409eff;
 $--color-noselect: #ddd;
- $--font-size:14px;
+$--font-size: 14px;
 .container {
   .feedback-item {
     .info-hint {

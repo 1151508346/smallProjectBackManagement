@@ -5,18 +5,16 @@
       <span>商品列表</span>
     </div>
     <div class="goods-manage-operate">
-      <el-button size="mini" icon="el-icon-upload2" type="primary"
-        @click = "uploadGoods"
-      >上传商品</el-button>
-      <el-input size="mini" placeholder="根据商品ID或商品名称" class="input-with-select"
+      <el-button size="mini" icon="el-icon-upload2" type="primary" @click="uploadGoods">上传商品</el-button>
+      <el-input
+        size="mini"
+        placeholder="根据商品ID或商品名称"
+        class="input-with-select"
         v-model="searchContent"
       >
-        <el-button slot="append" icon="el-icon-search" title="搜索"
-          @click = "handleSearch"
-         ></el-button>
+        <el-button slot="append" icon="el-icon-search" title="搜索" @click="handleSearch"></el-button>
       </el-input>
     </div>
-
     <el-table
       ref="multipleTable"
       :data="goodsInfoList"
@@ -57,13 +55,18 @@
       <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
       <el-button @click="toggleSelection()">取消选择</el-button>
     </div>-->
+    <!-- <UploadGoods ref="uploadGoods" /> -->
   </div>
 </template>
 
 <script>
 import UpdateGoodsInfo from "@/components/UpdateGoodsInfo.vue";
-import UploadGoods from "@/components/UploadGoods.vue"
+import UploadGoods from "@/components/UploadGoods.vue";
+
 export default {
+  // components: {
+  //   UploadGoods
+  // },
   data: function() {
     return {
       goodsInfoList: [],
@@ -71,11 +74,14 @@ export default {
       page: 1,
       limit: 10,
       goodsAllCount: 0,
-      searchInfo:"",
-      searchContent:"",
-      goodsSort:[]
+      searchInfo: "",
+      searchContent: "",
+      goodsSort: [],
+      dialogVisible: false
     };
   },
+  created() {},
+
   mounted() {
     /**
      * 获取用户数据列表
@@ -84,7 +90,15 @@ export default {
     this.getGoodsAllCount();
     this.getSort();
   },
+
   methods: {
+    handleClose(done) {
+      var _that = this;
+      _that.$common.alertHint(_that, "衣优美服装提醒您", "a");
+    },
+    handleOpened() {
+      this.$common.alertHint(this, "衣优美服装提醒您", "b");
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -104,10 +118,9 @@ export default {
       this.request({
         url: url,
         method: "GET",
-        params:{
-          searchInfo:_that.searchInfo
+        params: {
+          searchInfo: _that.searchInfo
         }
-
       }).then(res => {
         // console.log(res.data);
         if (res.data["count(goodsid)"] > 0) {
@@ -125,7 +138,7 @@ export default {
         params: {
           page: page,
           limit: _that.limit,
-          searchInfo:_that.searchInfo
+          searchInfo: _that.searchInfo
         }
       })
         .then(res => {
@@ -250,68 +263,122 @@ export default {
             goodsname === "" ||
             goodsprice === "" ||
             goodscount === "" ||
-            defaultDate === "" || defaultDate === null
+            defaultDate === "" ||
+            defaultDate === null
           ) {
             _that.$common.alertHint(_that, "衣优美服装提醒您", "请完善信息");
             return;
           }
-          _that.request({
-            url: url,
-            method: "POST",
-            data: {
-              goodsname:goodsname,
-              goodsprice:goodsprice,
-              goodscount:goodscount,
-              goodsid:goodsid,
-              createtime: defaultDate
-            }
-          }).then(res=>{
-            if(res.data.result === 'success'){
-              _that.$common.alertHint(_that,"衣优美服装提醒您","修改商品数据成功");
+          _that
+            .request({
+              url: url,
+              method: "POST",
+              data: {
+                goodsname: goodsname,
+                goodsprice: goodsprice,
+                goodscount: goodscount,
+                goodsid: goodsid,
+                createtime: defaultDate
+              }
+            })
+            .then(res => {
+              if (res.data.result === "success") {
+                _that.$common.alertHint(
+                  _that,
+                  "衣优美服装提醒您",
+                  "修改商品数据成功"
+                );
                 var url = this.$api.getGoodsInfo;
-              _that.initGetGoodsInfo(url,_that.page,_that)
-            }else{
-               _that.$common.alertHint(_that,"衣优美服装提醒您","修改商品数据失败");
-            }
-          }).catch(err=>{
-
-          });
+                _that.initGetGoodsInfo(url, _that.page, _that);
+              } else {
+                _that.$common.alertHint(
+                  _that,
+                  "衣优美服装提醒您",
+                  "修改商品数据失败"
+                );
+              }
+            })
+            .catch(err => {});
         })
         .catch(err => {});
     },
-    handleSearch(){
-      this.searchInfo = this.searchContent ;
+    handleSearch() {
+      this.searchInfo = this.searchContent;
       this.searchContent = "";
       var url = this.$api.getGoodsInfo;
       this.page = 1;
-       this.getGoodsAllCount();
-      this.initGetGoodsInfo(url,this.page,this)
+      this.getGoodsAllCount();
+      this.initGetGoodsInfo(url, this.page, this);
     },
-    uploadGoods(){
+    uploadGoods() {
+      var _that = this;
       var goodsSort = this.goodsSort;
-      this.$alert(<UploadGoods ref= "uploadGoods" goodsSort = {{...goodsSort}}/>,"上传商品", {
-        dangerouslyUseHTMLString: true
-      })
+      this.$alert(
+        <UploadGoods ref="uploadGoods" goodsSort={{ ...goodsSort }} />,
+        "上传商品",
+        {
+          dangerouslyUseHTMLString: true
+        }
+      ).then(res => {
+        var {
+          typeId,
+          category,
+          goodsId,
+          goodsName,
+          goodsCount,
+          goodsPrice,
+          formDataInfo
+        } = _that.$refs.uploadGoods.$data;
+        // if (
+        //   typeId.trim() === "" ||
+        //   category.trim() === "" ||
+        //   goodsId.trim() === "" ||
+        //   goodsName.trim() === "" ||
+        //   goodsCount.trim() === "" ||
+        //   goodsPrice.trim() === "" || formDataInfo == null
+        // ) {
+        //   _that.$common.alertHint(_that,"衣优美服装提醒您","请完善信息");
+        //   return;
+        // }
+        // console.log(formDataInfo)
+        formDataInfo.append("typeId", typeId);
+        formDataInfo.append("category", category);
+        formDataInfo.append("goodsId", goodsId);
+        formDataInfo.append("goodsName", goodsName);
+        formDataInfo.append("goodsCount", goodsCount);
+        formDataInfo.append("goodsPrice", goodsPrice);
+        var url = _that.$api.uploadFile;
+        var loading = _that.$common.loadingHint(_that);
+        this.request({
+          url,
+          method: "POST",
+          data: formDataInfo
+        }).then(res=>{
+          loading.close();
+          console.log(res);
+        }).catch(err=>{
+           loading.close();
+        });
+      });
     },
-    getSort(){
+    getSort() {
       var _that = this;
       this.goodsSort = [];
-      var url = this.$api.getSort
+      var url = this.$api.getSort;
       this.request({
-        url:url,
-        method:"GET",
-      }).then(res=>{
-         
-          res.data.forEach(item=>{
-            _that.goodsSort.push({
-              value:item.typeid,
-              label:item.typeid
-            })
-          })
-      }).catch(err=>{
+        url: url,
+        method: "GET"
       })
+        .then(res => {
+          res.data.forEach(item => {
+            _that.goodsSort.push({
+              value: item.typeid,
+              label: item.typeid
+            });
+          });
+        })
+        .catch(err => {});
     }
-
   }
 };
 </script>

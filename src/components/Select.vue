@@ -56,7 +56,8 @@ export default {
   methods: {
     changeSelectValue(params){
      this.selectValue = params
-    
+      this.$emit("getTypeId",this.selectValue);
+      this.$emit("getCategory",this.selectValue);
     }
   },
 };

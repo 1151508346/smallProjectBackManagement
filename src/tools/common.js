@@ -5,7 +5,8 @@
 function alertHint(_this, title, content) {
    var result =  _this.$alert(content, title, {
         dangerouslyUseHTMLString: true,
-        showClose: false
+        showClose: false,
+
     });
     return result
 }
@@ -41,7 +42,6 @@ function getCookie(cname) {
         if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
     }
     return "";
-
 }
 //删除cookie
 function removeCookie(cname) {
