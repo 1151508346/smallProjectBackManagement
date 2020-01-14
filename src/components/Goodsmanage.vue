@@ -310,6 +310,63 @@ export default {
       this.getGoodsAllCount();
       this.initGetGoodsInfo(url, this.page, this);
     },
+    createContent(data) {
+      var _that = this;
+      var {
+        typeId,
+        category,
+        goodsId,
+        goodsName,
+        goodsCount,
+        goodsPrice,
+        formDataInfo
+      } = data;
+      var url = this.$api.createContent;
+      this.request({
+        url: url,
+        method: "POST",
+        data: {
+          typeId,
+          category,
+          goodsId,
+          goodsName,
+          goodsCount,
+          goodsPrice,
+          formDataInfo
+        }
+      }).then(res => {
+        if (res.data.result != "fail") {
+        formDataInfo.append("typeId", typeId);
+        formDataInfo.append("category", category);
+        formDataInfo.append("goodsId", goodsId);
+        formDataInfo.append("goodsName", goodsName);
+        formDataInfo.append("goodsCount", goodsCount);
+        formDataInfo.append("goodsPrice", goodsPrice);
+          var url = _that.$api.uploadFile;
+          var loading = _that.$common.loadingHint(_that);
+          _that
+            .request({
+              url: url,
+              method: "POST",
+              data: formDataInfo,
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
+            })
+            .then(res => {
+              loading.close();
+              if(res.data.result === "success"){
+                _that.$common.alertHint(_that,"衣优美服装提醒您","上传商品成功");
+              }else{
+                 _that.$common.alertHint(_that,"衣优美服装提醒您","上传商品失败");
+              }
+            })
+            .catch(err => {
+              loading.close();
+            });
+        }
+      });
+    },
     uploadGoods() {
       var _that = this;
       var goodsSort = this.goodsSort;
@@ -329,36 +386,21 @@ export default {
           goodsPrice,
           formDataInfo
         } = _that.$refs.uploadGoods.$data;
-        // if (
-        //   typeId.trim() === "" ||
-        //   category.trim() === "" ||
-        //   goodsId.trim() === "" ||
-        //   goodsName.trim() === "" ||
-        //   goodsCount.trim() === "" ||
-        //   goodsPrice.trim() === "" || formDataInfo == null
-        // ) {
-        //   _that.$common.alertHint(_that,"衣优美服装提醒您","请完善信息");
-        //   return;
-        // }
-        // console.log(formDataInfo)
-        formDataInfo.append("typeId", typeId);
-        formDataInfo.append("category", category);
-        formDataInfo.append("goodsId", goodsId);
-        formDataInfo.append("goodsName", goodsName);
-        formDataInfo.append("goodsCount", goodsCount);
-        formDataInfo.append("goodsPrice", goodsPrice);
-        var url = _that.$api.uploadFile;
-        var loading = _that.$common.loadingHint(_that);
-        this.request({
-          url,
-          method: "POST",
-          data: formDataInfo
-        }).then(res=>{
-          loading.close();
-          console.log(res);
-        }).catch(err=>{
-           loading.close();
-        });
+        if (
+          typeId.trim() === "" ||
+          category.trim() === "" ||
+          goodsId.trim() === "" ||
+          goodsName.trim() === "" ||
+          goodsCount.trim() === "" ||
+          goodsPrice.trim() === "" ||
+          formDataInfo == null
+        ) {
+        _that.$common.alertHint(_that, "衣优美服装提醒您", "请完善信息");
+          return;
+        }
+        _that.createContent(_that.$refs.uploadGoods.$data);
+       
+        
       });
     },
     getSort() {

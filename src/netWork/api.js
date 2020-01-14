@@ -19,7 +19,8 @@ var URL= {
      updateOrderInfo:"/updateOrderInfo",
      getSort:"/getSort",
      getCategoryList:"/getCategoryList",
-     uploadFile:"/uploadFile"
+     uploadFile:"/uploadFile",
+     createContent:"/createContent"
     
 }
 

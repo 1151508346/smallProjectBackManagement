@@ -1,5 +1,12 @@
 <template>
-  <div class="container feedback">
+  
+  <el-dialog
+  title="提示"
+  :visible.sync="dialogVisible"
+  width="30%"
+  :before-close="handleClose">
+    <div class="container feedback">
+
     <div class="upload-item">
       <span class="info-hint">选择文件</span>
       <div class="upload-item-list file">
@@ -9,7 +16,7 @@
         </a>
 
         <div class="hidden-default-style">
-          <input type="file" multiple="multiple" name id="upload-item-file" />
+          <input type="file" name id="upload-item-file" />
           <span>{{fileValue}}</span>
         </div>
       </div>
@@ -146,6 +153,12 @@
       ></textarea>
     </div>-->
   </div>
+  
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+</el-dialog>
 </template>
 
 <script>
@@ -160,7 +173,7 @@ export default {
   components: {
     Select
   },
-  
+
   data: function() {
     return {
       //   sexStatus: false,
@@ -199,6 +212,8 @@ export default {
         }
       ],
       value: "",
+      // section: "", //章节
+      // problem: "" //问题描述
       categoryList: [],
       sexList: [
         {
@@ -218,7 +233,7 @@ export default {
       goodsName: "",
       goodsCount: "",
       goodsPrice: "",
-      formDataInfo:null
+      dialogVisible:
     };
   },
   mounted() {},
@@ -245,14 +260,7 @@ export default {
       var _that = this;
       var upload = document.getElementById("upload-item-file");
       upload.onchange = function(e) {
-        var formData = new FormData();
         _that.fileValue = this.value;
-        var fileArr = e.target.files;
-        fileArr.forEach(item => {
-          formData.append("imageList", item,item.name);
-        });
-        _that.formDataInfo = formData;
-        
       };
       upload.click();
     },
@@ -284,8 +292,7 @@ export default {
         })
         .catch(err => {});
     }
-  },
- 
+  }
 };
 </script>
 

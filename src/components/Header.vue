@@ -40,7 +40,10 @@ export default {
             path:"/login"
           })
         }else{
-          this.$common.alertHint(this,"衣优美服装提醒您","会话已超时间");
+          this.$common.alertHint(this,"衣优美服装提醒您","会话已超时，退出成功");
+           this.$router.push({
+            path:"/login"
+          })
         }
     },
     //阻止事件冒泡
