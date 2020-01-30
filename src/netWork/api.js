@@ -20,7 +20,21 @@ var URL= {
      getSort:"/getSort",
      getCategoryList:"/getCategoryList",
      uploadFile:"/uploadFile",
-     createContent:"/createContent"
+     createContent:"/createContent",
+     getEvaluteCount:"/getEvaluteCount",
+     getEvaluteDetailInfo:"/getEvaluteDetailInfo",
+     deleteEvaluteInfo:"/deleteEvaluteInfo",
+     editedEvaluteInfo:"/editedEvaluteInfo",
+     getCouponCount:"/getCouponCount",
+     getCouponDetailInfo:"/getCouponDetailInfo",
+     editedCouponInfo:"/editedCouponInfo",
+     deleteCouponInfo:"/deleteCouponInfo"
+
+
+
+
+
+
     
 }
 

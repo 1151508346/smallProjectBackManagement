@@ -1,7 +1,7 @@
 <template>
   <div class="welcome">
     <div class="welcome-title">
-      <i class="el-icon-s-custom"></i>
+      <i class="el-icon-s-home"></i>
       <span>首页</span>
       <span class="system-time">系统时间 : {{systemTime}}</span>
     </div>

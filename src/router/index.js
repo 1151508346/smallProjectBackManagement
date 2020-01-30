@@ -7,6 +7,10 @@ import Usermanage from "@/components/Usermanage";
 import Ordermanage from "@/components/Ordermanage";
 import Goodsmanage from "@/components/Goodsmanage";
 import Errors from '../views/Error.vue';
+import GoodsEvalute from "@/components/GoodsEvalute";
+import AuditLog from "@/components/AuditLog";
+import Coupon from "@/components/Coupon";
+import Statistics from "@/components/Statistics"
 
 Vue.use(VueRouter)
 
@@ -24,26 +28,47 @@ const routes = [
         path: "welcome",
         name: "welcome",
         component: Welcome
-      },{
+      }, {
         path: "usermanage",
         name: "usermanage",
-        component:Usermanage
-      },{
+        component: Usermanage
+      }, {
         path: "ordermanage",
         name: "ordermanage",
         component: Ordermanage
-      },{
+      }, {
         path: "goodsmanage",
         name: "goodsmanage",
         component: Goodsmanage
-      }
+      },
+      {
+        path: "goodsevalute",
+        name: "goodsevalute",
+        component: GoodsEvalute
+      },
+      {
+        path: "auditLog",
+        name: "auditLog",
+        component: AuditLog
+      },
+      {
+        path: "coupon",
+        name: "coupon",
+        component: Coupon
+      },
+      {
+        path: "statistics",
+        name: "statistics",
+        component: Statistics
+      },
     ],
-    redirect:()=>"home/welcome"
+    redirect: () => "home/welcome"
   }, {
     path: "/",
     name: "home",
     redirect: () => "home/welcome",
   },
+
   {
     // Error
     path: "**",

@@ -1,7 +1,7 @@
 <template>
   <div class="goods-manage">
     <div class="goods-title">
-      <i class="el-icon-s-goods"></i>
+      <i class="el-icon-s-order"></i>
       <span>订单列表</span>
     </div>
     <div class="goods-manage-operate">
