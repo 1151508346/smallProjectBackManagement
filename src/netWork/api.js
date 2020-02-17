@@ -28,7 +28,15 @@ var URL= {
      getCouponCount:"/getCouponCount",
      getCouponDetailInfo:"/getCouponDetailInfo",
      editedCouponInfo:"/editedCouponInfo",
-     deleteCouponInfo:"/deleteCouponInfo"
+     deleteCouponInfo:"/deleteCouponInfo",
+     getAuditLogCount:"/getAuditLogCount",
+     getAuditLogDetailInfo:"/getAuditLogDetailInfo",
+     deleteAuditInfo:"/deleteAuditInfo",
+     deleteNotTheSameDayLog:"/deleteNotTheSameDayLog",
+     //统计
+     searchGoodsSaleNumType:"/searchGoodsSaleNumType",
+     searchGoodsSaleNumSize:"/searchGoodsSaleNumSize",
+     getAllGoodsId:"/getAllGoodsId"
 
 
 

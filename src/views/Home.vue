@@ -28,6 +28,11 @@ export default {
     Header,
     Aside
   },
+  created(){
+    //删除不是当前的操作日志
+      // this.deleteNotTheSameDayOperateLog();
+  
+  },
   mounted() {
     var sessionID = this.$common.getCookie("sessionID");
     // console.log(sessionID);
@@ -61,7 +66,22 @@ export default {
       });
     }
   },
-  methods: {},
+  methods: {
+    // deleteNotTheSameDayOperateLog(){
+    //     var url = this.$api.deleteNotTheSameDayLog
+    //     this.request({
+    //       url:url,
+    //       method:"POST",
+          
+    //     }).then(res=>{
+    //       console.log(res.data)
+    //     })
+    //     setTimeout(()=>{
+    //       //每10分钟发送一次请求，用来清除掉不是当前的日志
+    //       this.deleteNotTheSameDayOperateLog();
+    //     },1000)
+    // }
+  },
   // watch: {
   //   // $routes:{
   //   //   handler(old,news){

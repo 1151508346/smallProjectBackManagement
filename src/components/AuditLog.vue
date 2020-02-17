@@ -6,13 +6,13 @@
     </div>
     <div class="goods-evalute-operate">
       <div class="button-group">
-        <el-button size="mini" icon="el-icon-setting" type="warning" @click="updateEvaluteInfo">修改</el-button>
-        <el-button size="mini" icon="el-icon-delete" type="danger" @click="deleteEvaluteInfo">删除</el-button>
+        <!-- <el-button size="mini" icon="el-icon-setting" type="warning" @click="updateAuditInfo">修改</el-button> -->
+        <el-button size="mini" icon="el-icon-delete" type="danger" @click="deleteAuditInfo">删除</el-button>
       </div>
 
       <el-input
         size="mini"
-        placeholder="根据用户ID或商品ID"
+        placeholder="根据用户ID或操作方式"
         class="input-with-select"
         v-model="searchContent"
       >
@@ -24,7 +24,7 @@
     </div>
     <el-table
       ref="multipleTable"
-      :data="evaluteDetailList"
+      :data="auditLogDetailList"
       tooltip-effect="dark"
       style="width:100% ;background-color:rgba(50, 67, 93, 1);"
       type="index"
@@ -34,12 +34,12 @@
       <el-table-column style="background-color:rgba(50, 67, 93, 1)" type="selection" width="55"></el-table-column>
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="userid" label="用户ID" sortable width="100"></el-table-column>
-      <el-table-column prop="goodsid" label="商品ID" show-overflow-tooltip width="100"></el-table-column>
-      <el-table-column prop="evaluatecontent" label="评价内容"
+      <el-table-column prop="username" label="用户名" show-overflow-tooltip ></el-table-column>
+      <el-table-column prop="operateway" label="操作方式"
         show-overflow-tooltip
        ></el-table-column>
-      <el-table-column prop="grade" label="评价等级" width="80
-      "></el-table-column>
+      <el-table-column prop="operatetime" label="操作时间" 
+      ></el-table-column>
       <!-- <el-table-column sortable prop="createtime" label="添加日期" show-overflow-tooltip></el-table-column>
       <el-table-column prop="typeid" label="分类" width="100"></el-table-column>
       <el-table-column prop="category" label="商品所属类型" width="110" show-overflow-tooltip></el-table-column> -->
@@ -57,7 +57,7 @@
         @next-click="nextClick"
         background
         layout="prev, pager, next"
-        :total="evaluteCount"
+        :total="auditLogCount"
         :current-page="page"
       ></el-pagination>
     </div>
@@ -77,25 +77,24 @@ export default {
     return {
       page: 1,
       limit: 10,
-      evaluteDetailList:[],
-      evaluteCount: 0,
+      auditLogDetailList:[],
+      auditLogCount: 0,
       searchInfo: "",
       searchContent: "",
       dialogVisible: false,
       multipleSelection:[]
     };
   },
-  created() {},
-  mounted() {
-    this.getEvaluteCount();
-    this.getEvaluteDetailInfo();
+  created() {
+    this.deleteNotTheSameDayOperateLog();
   },
-
+  mounted() {
+  },
   methods: {
-    getEvaluteCount() {
+    getAuditLogCount() {
 
         var _that = this;
-      var url = this.$api.getEvaluteCount;
+      var url = this.$api.getAuditLogCount;
       this.request({
         url: url,
         method: "GET",
@@ -103,13 +102,13 @@ export default {
           searchInfo : _that.searchInfo
         }
       }).then(res => {
-        _that.evaluteCount = res.data.evaluteCount;
+        _that.auditLogCount = res.data.auditLogCount;
       });
     },
-    getEvaluteDetailInfo() {
+    getAuditLogDetailInfo(loadingObj) {
       console.log("----------------------------")
       var _that = this;
-      var url = this.$api.getEvaluteDetailInfo;
+      var url = this.$api.getAuditLogDetailInfo;
       this.request({
         url: url,
         method: "POST",
@@ -120,35 +119,38 @@ export default {
           
         }
       }).then(res => {
-        // console.log(res.data);
-        _that.evaluteDetailList = res.data
-
+        console.log(res.data);
+        _that.auditLogDetailList = res.data
+        if(loadingObj){
+          loadingObj.close();
+        }
       });
     },
-     currentChange(page) {
+    currentChange(page) {
       // var url = this.$api.getGoodsInfo;
-       var url = this.$api.getEvaluteDetailInfo;
+       var url = this.$api.getAuditLogDetailInfo;
       this.page = page;
-      this.getEvaluteDetailInfo(url, page, this);
+      var loadingObj = this.$common.loadingHint(this);
+      this.getAuditLogDetailInfo(loadingObj);
     },
     prevClick(page) {
-      // var url = this.$api.getGoodsInfo;
-       var url = this.$api.getEvaluteDetailInfo;
+      //  var url = this.$api.getAuditLogDetailInfo;
       this.page = page;
-      this.getEvaluteDetailInfo(url, page, this);
+      var loadingObj = this.$common.loadingHint(this);
+      this.getAuditLogDetailInfo(loadingObj);
     },
     nextClick(page) {
       // var url = this.$api.getGoodsInfo;
-       var url = this.$api.getEvaluteDetailInfo;
+      //  var url = this.$api.getAuditLogDetailInfo;
+      var loadingObj = this.$common.loadingHint(this);
       this.page = page;
-
-      this.getEvaluteDetailInfo(url, page, this);
+      this.getAuditLogDetailInfo(loadingObj);
     },
     handleSelectionChange(val){
       this.multipleSelection = val;
       // console.log(val) 
     },
-    updateEvaluteInfo(){
+    updateAuditInfo(){
        var _that = this;
       // console.log(index,row)
       if (this.multipleSelection.length!==1) {
@@ -185,7 +187,7 @@ export default {
         })
       })
     },
-    deleteEvaluteInfo(){
+    deleteAuditInfo(){
        var _that = this;
       // console.log(index,row)
       if (this.multipleSelection.length===0) {
@@ -205,7 +207,7 @@ export default {
           type: "warning"
         }
       ).then(()=>{
-       var url = _that.$api.deleteEvaluteInfo;
+       var url = _that.$api.deleteAuditInfo;
         _that.request({
         url:url,
         method:"POST",
@@ -214,8 +216,8 @@ export default {
           console.log(res.data);
           if(res.data.result === "success"){
           _that.$common.alertHint(_that,"衣优美丽服装提醒您","删除成功");
-          _that.getEvaluteDetailInfo();
-          _that.getEvaluteCount();
+          _that.getAuditLogDetailInfo();
+          _that.getAuditLogCount();
         }else{
           _that.$common.alertHint(_that,"衣优美服装提醒您","删除失败");
         }
@@ -226,14 +228,35 @@ export default {
             message: "已取消删除"
           });
       })
-     
-      
     },
-    handleSearchFunc(){3
+    
+    handleSearchFunc(){
       this.searchInfo = this.searchContent;
       this.searchContent = "";
-      this.getEvaluteCount();
-      this.getEvaluteDetailInfo();
+      this.page = 1;
+      // var url = this.$api.getAuditLogDetailInfo;
+        var loadingObj = this.$common.loadingHint(this);
+      this.getAuditLogCount();
+      this.getAuditLogDetailInfo(loadingObj);
+    },
+    deleteNotTheSameDayOperateLog(){
+      var _that = this;
+      var url = this.$api.deleteNotTheSameDayLog
+      var loadingObj = this.$common.loadingHint(this);
+      this.request({
+        url:url,
+        method:"POST",
+      }).then(res=>{
+        // console.log(res.data)
+        _that.getAuditLogCount();
+        _that.getAuditLogDetailInfo(loadingObj);
+      }).catch(err=>{
+        loadingObj.close();
+      })
+      setTimeout(()=>{
+        //每10分钟发送一次请求，用来清除掉不是当前的日志
+        this.deleteNotTheSameDayOperateLog();
+      },1000*60*10)
     }
   }
 };

@@ -7,6 +7,7 @@ import './plugins/element.js';
 import { request, interceptRequest } from "@/netWork/request.js";
 import $api from "@/netWork/api.js";
 import common from "@/tools/common.js"
+import echarts from "echarts";
 Vue.config.productionTip = false;
 /**
  * 将网路请求的方法挂在到Vue的原型上，在每个组件当中都可以使用该方法，
@@ -15,7 +16,8 @@ Vue.config.productionTip = false;
 Vue.prototype.request = request;
 Vue.prototype.interceptRequest = interceptRequest;
 Vue.prototype.$api = $api;
-Vue.prototype.$common = common
+Vue.prototype.$common = common;
+Vue.prototype.$echarts = echarts;
 new Vue({
   router,
   store,

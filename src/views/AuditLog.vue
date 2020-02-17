@@ -57,6 +57,10 @@ export default {
       userSelectStatus2: false
     };
   },
+  created(){
+    //删除不是当前的操作日志
+    this.deleteNotTheSameDayOperateLog();
+  },
   computed: {
     isSearch() {
       return this.userSelectStatus1 || this.userSelectStatus2;
@@ -67,7 +71,8 @@ export default {
       this.$router.push({
         path: "/"
       });
-    }
+    },
+   
   }
 };
 </script>
