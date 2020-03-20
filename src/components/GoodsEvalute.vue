@@ -107,7 +107,6 @@ export default {
       });
     },
     getEvaluteDetailInfo() {
-      console.log("----------------------------")
       var _that = this;
       var url = this.$api.getEvaluteDetailInfo;
       this.request({
@@ -211,7 +210,6 @@ export default {
         method:"POST",
         data:_that.multipleSelection
       }).then(res=>{
-          console.log(res.data);
           if(res.data.result === "success"){
           _that.$common.alertHint(_that,"衣优美丽服装提醒您","删除成功");
           _that.getEvaluteDetailInfo();

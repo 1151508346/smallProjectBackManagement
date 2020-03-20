@@ -21,12 +21,20 @@
             <span class="xuhao">1.</span><span class="item-content">管理注册小程序的用户，添加、删除、修改用户的信息。</span>
           </li>
           <li>
-            <span class="xuhao">2.</span><span class="item-content">管理商品详细信息，添加、删除、修改商品的信息。</span>
+            <span class="xuhao">2. </span><span class="item-content">管理商品详细信息，上传、删除、修改商品的信息；以及对商品评价信息进行管理。</span>
           </li>
           <li>
-            <span class="xuhao">3.</span><span class="item-content">用户下单的详细信息，添加、删除、修改商品的信息，以及用户ID。</span>
+            <span class="xuhao">3. </span><span class="item-content">用户下单的详细信息，添加、删除、修改商品的信息，以及用户ID。</span>
           </li>
-
+         <li>
+            <span class="xuhao">4. </span><span class="item-content">用户、商品、订单、优惠券、审计均可以对信息进行搜索，以精确找到所需要的信息。</span>
+          </li>
+          <li>
+            <span class="xuhao">5. </span><span class="item-content">管理用户是否领取和使用优惠券，明确了优惠券的使用情况。</span>
+          </li>
+           <li>
+            <span class="xuhao">6. </span><span class="item-content">管理当前用户使用小程序的操作情况和操作明细。</span>
+          </li>
         </div>
       </div>
     </div>
@@ -153,7 +161,7 @@ export default {
     }
     .system-instruction {
       position: absolute;
-      top: 29%;
+      top: 18%;
       bottom: 0;
       right: 0;
       left: 0;

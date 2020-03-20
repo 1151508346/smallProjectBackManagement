@@ -29,44 +29,44 @@ export default {
     Aside
   },
   created(){
-    //删除不是当前的操作日志
+    //删除不是当天的操作日志
       // this.deleteNotTheSameDayOperateLog();
-  
   },
   mounted() {
-    var sessionID = this.$common.getCookie("sessionID");
-    // console.log(sessionID);
-    var url = this.$api.userVerify;
-    var _that = this;
-    if (sessionID) {
-      this.request({
-        url: url,
-        method: "GET",
-        params: {
-          sessionID: sessionID
-        }
-      })
-        .then(res => {
-          // console.log(res);
-          if (res.data.result === "success") {
-            return;
-          }
-          if (res.data.result === "fail") {
-            _that.$router.push({
-              // path: "/login"
-            });
-          }
-        })
-        .catch(err => {
-          // console.log(err);
-        });
-    } else {
-      this.$router.push({
-        // path: "/login"
-      });
-    }
+    // this.verifyUserLoginState();
   },
   methods: {
+    verifyUserLoginState(){
+      var sessionID = this.$common.getCookie("sessionID");
+      var url = this.$api.userVerify;
+      var _that = this;
+      if (sessionID) {
+        this.request({
+          url: url,
+          method: "GET",
+          params: {
+            sessionID: sessionID
+          }
+        })
+          .then(res => {
+              if (res.data.result === "success") {
+              return;
+            }
+            if (res.data.result === "fail") {
+              _that.$router.push({
+                path: "/login"
+              });
+            }
+          })
+          .catch(err => {
+            // console.log(err);
+          });
+      } else {
+        this.$router.push({
+          path: "/login"
+        });
+      }
+    }
     // deleteNotTheSameDayOperateLog(){
     //     var url = this.$api.deleteNotTheSameDayLog
     //     this.request({

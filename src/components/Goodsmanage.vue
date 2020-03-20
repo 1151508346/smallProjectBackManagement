@@ -122,7 +122,7 @@ export default {
           searchInfo: _that.searchInfo
         }
       }).then(res => {
-        // console.log(res.data);
+        console.log(res.data);
         if (res.data["count(goodsid)"] > 0) {
           _that.goodsAllCount = res.data["count(goodsid)"];
           var url = _that.$api.getGoodsInfo;
@@ -145,9 +145,6 @@ export default {
           loading.close();
           res.data.map(item => {
             item.goodsprice = item.goodsprice + "元";
-            // item.createtime = new Date(
-            //   Date.parse(item.createtime)
-            // ).toLocaleString();
             return item;
           });
           _that.goodsInfoList = res.data;
@@ -193,30 +190,27 @@ export default {
         }
       )
         .then(() => {
-          // this.$message({
-          //   type: 'success',
-          //   message: '删除成功!'
-          // });
-
           var url = this.$api.deleteGoodsInfo;
           this.request({
             url: url,
             method: "GET",
             params: {
-              goodsid: row.goodsid
+              goodsId: row.goodsid,
+              typeId:row.typeid,
+              category:row.category
             }
           })
             .then(res => {
               if (res.data.result === "success") {
-                var url = this.$api.getGoodsInfo;
-                _that.initGetGoodsInfo(url, _that.page, _that);
-                _this.$message({
+                var url = _that.$api.getGoodsInfo;
+                _that.getGoodsAllCount();
+                _that.$message({
                   type: "success",
                   message: "删除成功!"
                 });
               }
               if (res.data.result === "fail") {
-                _this.$message({
+                _that.$message({
                   type: "info",
                   message: "删除失败"
                 });

@@ -18,15 +18,15 @@
           type="warning"
           @click="handleOperateUser($event,'update')"
         >修改用户</el-button>
-        <!-- <el-button
+        <el-button
           size="mini"
           icon="el-icon-delete"
           type="danger"
           @click="handleOperateUser($event,'delete')"
-        >删除用户</el-button> -->
+        >删除用户</el-button>
       </el-row>
     </div>
-
+	
     <el-table
       ref="multipleTable"
       :data="userInfoList"
@@ -160,9 +160,9 @@ export default {
         case "update":
           this.updateUserInfo();
           break;
-        // case "delete":
-        //   this.deleteUserInfo();
-          // break;
+        case "delete":
+          this.deleteUserInfo();
+          break;
         default:
           break;
       }
@@ -315,30 +315,62 @@ export default {
         })
         .catch(err => {});
     },
-    // deleteUserInfo() {
-    //   var useridList = [];
-    //   if (this.multipleSelection.length === 0) {
-    //     this.$common.alertHint(this, "衣优美服装提醒您", "至少选择一列");
-    //     return;
-    //   }
-    //   for (var item of this.multipleSelection) {
-    //     useridList.push({
-    //       userid: item.userid
-    //     });
-    //   }
-    //   var url = this.$api.deleteUserInfo
-    //   this.request({
-    //     url: url,
-    //     method:"POST",
-    //     data: {
-    //       useridList:useridList,
-    //     }
-    //   }).then(data=>{
-    //     console.log(data);
-    //   }).catch(err=>{
-    //     console.log(err);
-    //   });
-    // }
+    deleteUserInfo() {
+      var useridList = [];
+      var _that = this;
+      if (this.multipleSelection.length !== 1) {
+        this.$common.alertHint(this, "衣优美服装提醒您", "选择指定一列删除");
+        return;
+      }
+       this.$confirm(
+        "此操作将永久删除该用户全部信息, 是否继续?",
+        "衣优美服装提醒您",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(() => {
+           var url = this.$api.deleteUserInfo;
+            _that.request({
+              url: url,
+              method:"POST",
+              data: {
+                useridList:useridList,
+              }
+            }).then(res=>{
+              console.log(res.data)
+               if (res.data.result === "success") {
+                  _that.getUserAllCount();
+                _that.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }else{
+                _that.$message({
+                  type: "info",
+                  message: "删除失败"
+                });
+              }
+             
+            }).catch(err=>{
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+
+      for (var item of this.multipleSelection) {
+        useridList.push({
+          userid: item.userid
+        });
+      }
+     
+    }
   }
 };
 </script>

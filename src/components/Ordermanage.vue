@@ -112,7 +112,6 @@ export default {
           searchInfo:_that.searchInfo
         }
       }).then(res => {
-        // console.log(res.data);
         if (res.data["count(goodsid)"] > 0) {
           _that.goodsAllCount = res.data["count(goodsid)"];
           var url = _that.$api.getOrderInfo;

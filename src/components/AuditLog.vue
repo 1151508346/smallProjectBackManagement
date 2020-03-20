@@ -92,7 +92,6 @@ export default {
   },
   methods: {
     getAuditLogCount() {
-
         var _that = this;
       var url = this.$api.getAuditLogCount;
       this.request({
@@ -102,11 +101,11 @@ export default {
           searchInfo : _that.searchInfo
         }
       }).then(res => {
+        console.log(res.data)
         _that.auditLogCount = res.data.auditLogCount;
       });
     },
     getAuditLogDetailInfo(loadingObj) {
-      console.log("----------------------------")
       var _that = this;
       var url = this.$api.getAuditLogDetailInfo;
       this.request({
@@ -116,11 +115,11 @@ export default {
           page: _that.page,
           limit: _that.limit,
           searchInfo:_that.searchInfo
-          
         }
       }).then(res => {
-        console.log(res.data);
-        _that.auditLogDetailList = res.data
+        if(res.data){
+          _that.auditLogDetailList = res.data
+        }
         if(loadingObj){
           loadingObj.close();
         }

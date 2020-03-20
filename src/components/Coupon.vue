@@ -6,7 +6,17 @@
     </div>
     <div class="goods-coupon-operate">
       <div class="button-group">
-        <el-button size="mini" icon="el-icon-setting" type="warning" @click="updateCouponInfo">修改</el-button>
+        <el-button size="mini"
+          icon="el-icon-setting" 
+          type="primary"
+         @click="addCouponInfo">
+         添加</el-button>
+        <el-button size="mini" 
+          icon="el-icon-setting" 
+          type="warning" 
+          @click="updateCouponInfo">
+        修改
+        </el-button>
         <el-button size="mini" icon="el-icon-delete" type="danger" @click="deleteCouponInfo">删除</el-button>
       </div>
 
@@ -73,6 +83,7 @@
 
 <script>
 import EditCouponInfo from "@/components/EditCouponInfo.vue";
+import AddCouponInfo from "@/components/AddCouponInfo.vue";
 
 export default {
   data: function() {
@@ -160,7 +171,6 @@ export default {
         });
         return;
       }
-    //   console.log(this.multipleSelection)
     //   this.multipleSelection.
        this.$alert(
         <EditCouponInfo ref="edit_coupon_info" couponInfo = {{...this.multipleSelection[0]}}/>,
@@ -169,10 +179,8 @@ export default {
           dangerouslyUseHTMLString: true
         }
       ).then(res=>{
-        // console.log(res);
         var editedCouponInfo = _that.$refs.edit_coupon_info._props.couponInfo;
-        var url = _that.$api.editedCouponInfo
-        // console.log(editedCouponInfo);
+        var url = _that.$api.editedCouponInfo;
         this.request({
           url:url,
           method:"POST",
@@ -230,6 +238,42 @@ export default {
       })
      
       
+    },
+    addCouponInfo(){
+      var _that = this;
+       this.$alert(
+        <AddCouponInfo ref="add_coupon_info" />,
+        "评价编辑",
+        {
+          dangerouslyUseHTMLString: true
+        }
+      ).then(res=>{
+        var add_coupon_info = _that.$refs.add_coupon_info;
+        var couponInfo = add_coupon_info.$data.couponInfo
+        for (var key in couponInfo){
+          if(!couponInfo[key]){
+            setTimeout(()=>{
+              _that.$common.alertHint(_that,"衣优美服装提醒您",'请完善信息');
+            },200)
+            return ;
+          }
+        }
+
+        var url = _that.$api.addCouponInfo
+        this.request({
+          url:url,
+          method:"POST",
+          data:couponInfo
+        }).then(res=>{
+          if(res.data.result === "success"){
+             _that.getCouponCount();
+              _that.getCouponDetailInfo();
+              _that.$common.alertHint(_that, "衣优美服装提醒您", "添加订单成功");
+          }else{
+            _that.$common.alerHint(_that,"衣优美服装提醒您","添加订单失败");
+          }
+        })
+      })
     },
     handleSearchFunc(){
       this.searchInfo = this.searchContent;

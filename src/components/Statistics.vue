@@ -62,7 +62,6 @@ export default {
         url:url,
         method:"POST",
       }).then(res=>{
-        
         _that.options = res.data
       })
     },

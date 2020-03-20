@@ -36,7 +36,11 @@ var URL= {
      //统计
      searchGoodsSaleNumType:"/searchGoodsSaleNumType",
      searchGoodsSaleNumSize:"/searchGoodsSaleNumSize",
-     getAllGoodsId:"/getAllGoodsId"
+     getAllGoodsId:"/getAllGoodsId",
+ 
+     addCouponInfo:"/addCouponInfo"  //优惠券管理中add接口
+     
+
 
 
 

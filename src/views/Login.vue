@@ -91,8 +91,8 @@ export default {
     addEnterKeyDown(e){
       if(e.keyCode === 13){
           this.submitUserInfo();
-         }
-      }
+        }
+    }
   },
   //当监听键盘事件完成登录功能时，待组件被销毁时，移除掉绑定在document上的keydown事件
   destroyed(){
