@@ -67,7 +67,9 @@
                 v-model="couponInfo.starttime" 
                 type="datetime" 
                 size="mini" 
-                placeholder="选择日期时间">
+                placeholder="选择日期时间"
+               
+                >
             </el-date-picker>
         </div>
       </div>
@@ -198,7 +200,8 @@ export default {
       //   if (data === "description") this.descriptionStatus = false;
       if (data === "address") this.addressStatus = false;
       if (data === "password") this.passwordStatus = false;
-    }
+    },
+    
   }
 };
 </script>

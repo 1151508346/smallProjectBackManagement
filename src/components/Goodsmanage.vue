@@ -19,11 +19,12 @@
       ref="multipleTable"
       :data="goodsInfoList"
       tooltip-effect="dark"
-      style="width:100% ;background-color:rgba(50, 67, 93, 1);"
+      style="width:100% ;"
       type="index"
       :default-sort="{prop: 'createtime',prop: 'goodsid' ,order: 'descending'}"
       @selection-change="handleSelectionChange"
     >
+    <!-- style="width:100% ;background-color:rgba(50, 67, 93, 1);" -->
       <el-table-column style="background-color:rgba(50, 67, 93, 1)" type="selection" width="55"></el-table-column>
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="goodsid" label="商品ID" sortable width="100"></el-table-column>

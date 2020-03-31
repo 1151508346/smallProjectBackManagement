@@ -6,6 +6,7 @@ import Welcome from "@/components/Welcome";
 import Usermanage from "@/components/Usermanage";
 import Ordermanage from "@/components/Ordermanage";
 import Goodsmanage from "@/components/Goodsmanage";
+import ProblemBack from "@/components/ProblemBack";
 import Errors from '../views/Error.vue';
 import GoodsEvalute from "@/components/GoodsEvalute";
 import AuditLog from "@/components/AuditLog";
@@ -60,6 +61,11 @@ const routes = [
         path: "statistics",
         name: "statistics",
         component: Statistics
+      },
+      {
+        path: "problemBack",
+        name: "problemBack",
+        component: ProblemBack
       },
     ],
     redirect: () => "home/welcome"

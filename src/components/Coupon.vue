@@ -36,7 +36,7 @@
       ref="multipleTable"
       :data="couponDetailList"
       tooltip-effect="dark"
-      style="width:100% ;background-color:rgba(50, 67, 93, 1);"
+      style="width:100% ;"
       type="index"
       :default-sort="{prop: 'createtime',prop: 'goodsid' ,order: 'descending'}"
       @selection-change="handleSelectionChange"
@@ -133,8 +133,8 @@ export default {
           
         }
       }).then(res => {
-        console.log(res.data);
-        _that.couponDetailList = res.data
+        // console.log(res.data);
+        _that.couponDetailList = res.data;
 
       });
     },
@@ -163,23 +163,24 @@ export default {
     updateCouponInfo(){
        var _that = this;
       // console.log(index,row)
-      if (this.multipleSelection.length!==1) {
-        // this.$common.alertHint(this, "衣优美服装提醒您", "请选择修改的一列");
-        this.$message({
-          type: "info",
-          message: "请选择指定编辑的一行"
-        });
-        return;
-      }
-    //   this.multipleSelection.
+        if (this.multipleSelection.length!==1) {
+          // this.$common.alertHint(this, "衣优美服装提醒您", "请选择修改的一列");
+          this.$message({
+            type: "info",
+            message: "请选择指定编辑的一行"
+          });
+          return;
+        }
+      //   this.multipleSelection.
        this.$alert(
         <EditCouponInfo ref="edit_coupon_info" couponInfo = {{...this.multipleSelection[0]}}/>,
         "评价编辑",
-        {
-          dangerouslyUseHTMLString: true
-        }
-      ).then(res=>{
+          {
+            dangerouslyUseHTMLString: true
+          }
+        ).then(res=>{
         var editedCouponInfo = _that.$refs.edit_coupon_info._props.couponInfo;
+        console.log(editedCouponInfo);
         var url = _that.$api.editedCouponInfo;
         this.request({
           url:url,
@@ -189,11 +190,13 @@ export default {
         //   console.log(res)
           if(res.data.result === "success"){
               _that.$common.alertHint(_that, "衣优美服装提醒您", "修改信息成功");
+                _that.getCouponDetailInfo();
+                _that.getCouponCount();
           }else{
             _that.$common.alerHint(_that,"衣优美服装提醒您","修改信息失败");
           }
         })
-      })
+        })
     },
     deleteCouponInfo(){
        var _that = this;
@@ -243,7 +246,7 @@ export default {
       var _that = this;
        this.$alert(
         <AddCouponInfo ref="add_coupon_info" />,
-        "评价编辑",
+        "优惠券编辑",
         {
           dangerouslyUseHTMLString: true
         }
@@ -258,7 +261,6 @@ export default {
             return ;
           }
         }
-
         var url = _that.$api.addCouponInfo
         this.request({
           url:url,
@@ -266,11 +268,11 @@ export default {
           data:couponInfo
         }).then(res=>{
           if(res.data.result === "success"){
-             _that.getCouponCount();
+              _that.$common.alertHint(_that, "衣优美服装提醒您", "添加优惠券成功");
+              _that.getCouponCount();
               _that.getCouponDetailInfo();
-              _that.$common.alertHint(_that, "衣优美服装提醒您", "添加订单成功");
           }else{
-            _that.$common.alerHint(_that,"衣优美服装提醒您","添加订单失败");
+            _that.$common.alerHint(_that,"衣优美服装提醒您","添加优惠券失败");
           }
         })
       })

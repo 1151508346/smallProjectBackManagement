@@ -25,7 +25,7 @@
       ref="multipleTable"
       :data="goodsInfoList"
       tooltip-effect="dark"
-      style="width:100% ;background-color:rgba(50, 67, 93, 1);"
+      style="width:100% ;"
       type="index"
       :default-sort="{prop: 'createtime',prop: 'goodsid' ,order: 'descending'}"
       @selection-change="handleSelectionChange"
@@ -148,9 +148,7 @@ export default {
         });
     },
     currentChange(page) {
-      console.log(page);
       var url = this.$api.getOrderInfo;
-      console.log(this);
       this.initGetOrderInfo(url, page, this);
     },
     prevClick(page) {
@@ -162,7 +160,6 @@ export default {
       this.initGetOrderInfo(url, page, this);
     },
     handleDelete(index, row) {
-      // console.log(index,row);
       var url = this.$api.deleteOrderData;
       var _that = this;
       if (this.multipleSelection.indexOf(row) === -1) {

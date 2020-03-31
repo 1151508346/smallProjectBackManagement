@@ -20,6 +20,7 @@
 <script>
 import Aside from "@/components/Aside.vue";
 import Header from "@/components/Header.vue";
+import { ADDPROBLEMBACKCOUNT } from "@/store/mutations"
 export default {
   data: function() {
     return {};
@@ -33,7 +34,9 @@ export default {
       // this.deleteNotTheSameDayOperateLog();
   },
   mounted() {
-    // this.verifyUserLoginState();
+    this.verifyUserLoginState();
+
+    this.getProblemBackAllCount();
   },
   methods: {
     verifyUserLoginState(){
@@ -66,7 +69,7 @@ export default {
           path: "/login"
         });
       }
-    }
+    },
     // deleteNotTheSameDayOperateLog(){
     //     var url = this.$api.deleteNotTheSameDayLog
     //     this.request({
@@ -81,6 +84,19 @@ export default {
     //       this.deleteNotTheSameDayOperateLog();
     //     },1000)
     // }
+     getProblemBackAllCount() {
+      var _that = this;
+      var url = this.$api.getProblemBackCount;
+      this.request({
+        url: url,
+        methods: "GET",
+      }).then(res => {
+        if (res.data.problemBackCount > 0) {
+          //vuex中添加problemBackCount以在Header组件中使用
+          _that.$store.commit(ADDPROBLEMBACKCOUNT,res.data.problemBackCount)
+        }
+      });
+    },
   },
   // watch: {
   //   // $routes:{

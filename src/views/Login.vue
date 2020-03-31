@@ -166,7 +166,9 @@ $color--login-active:rgb(7, 110, 151);
           background-color:transparent;
           color:$color--font;
           padding:5px;
+          margin:auto 5px;
           font-size:18px;
+          width: 93%;
         }
         .login-submit{
           display: inline-block;

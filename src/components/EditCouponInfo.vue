@@ -86,10 +86,12 @@
         <span class="info-hint">开始时间</span>
          <div class="add-date-piker">
             <el-date-picker 
-                v-model="couponInfo.starttime" 
+                v-model="starttime" 
                 type="datetime" 
                 size="mini" 
-                placeholder="选择日期时间">
+                placeholder="选择日期时间"
+                @change = "changDateTimePickerValue($event,'starttime')"
+                >
             </el-date-picker>
         </div>
       </div>
@@ -97,10 +99,12 @@
         <span class="info-hint">结束时间</span>
             <div class="add-date-piker">
                 <el-date-picker 
-                v-model="couponInfo.endtime" 
-                type="datetime"
-                size="mini" 
-                placeholder="选择日期时间">
+                 v-model="endtime"
+                 type="datetime"
+                 size="mini" 
+                 placeholder="选择日期时间"
+                @change = "changDateTimePickerValue($event,'endtime')"
+                 >
                 </el-date-picker>
             </div>
       </div>
@@ -161,33 +165,13 @@ export default {
       //   descriptionStatus: false,
       usernameStatus: false,
       addressStatus: false,
-      //   userInfo: {
-      //     username: "",
-      //     email: "",
-      //     telphone: "",
-      //     address: ""
-      //   },
+      
       options: [
         {
           value: "",
           label: ""
         },
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "",
-          label: ""
-        },
-        {
-          value: "",
-          label: ""
-        }
+        
       ],
       value: "",
       startDate: "",
@@ -205,13 +189,18 @@ export default {
         }
       ],
       evaluteInfoObj :{},
+      starttime:"",
+      endtime:""
     };
   },
   mounted: function() {
+    this.starttime = this.couponInfo.starttime;
+    this.endtime = this.couponInfo.endtime;
     // this.defaultDate = this.goodsInfo.createtime;
     // console.log(this.evaluteInfo)
     // this.evaluteInfoObj = JSON.parse(JSON.stringify(this.evaluteInfo));
   },
+  
   methods: {
     handleFocusBorderStyle(e, data) {
       if (data === "username") this.usernameStatus = true;
@@ -230,6 +219,30 @@ export default {
       //   if (data === "description") this.descriptionStatus = false;
       if (data === "address") this.addressStatus = false;
       if (data === "password") this.passwordStatus = false;
+    },
+   /*  forMatDateTime(strTime){
+      var strList = strTime.split(" ");
+      var dateArr = strList[0].split("/");
+      var timeArr = strList[1].split(":");
+      console.log(timeArr)
+      if(timeArr[0].indexOf("上午") != -1){
+        timeArr[0] = timeArr[0].replace("上午","") >= 10 ? timeArr[0].replace("上午","") : "0"+timeArr[0].replace("上午","") ;
+      }else if(timeArr[0].indexOf("下午") != -1){
+        timeArr[0] = (parseInt(timeArr[0].replace("下午",""))+12).toString();
+      }
+      console.log(dateArr)
+      console.log(timeArr);
+      return [...dataArr,...timeArr]
+    }, */
+    changDateTimePickerValue(value,flag){
+
+      switch(flag){
+        case "starttime":
+          this.couponInfo.starttime = value;
+          break;
+        case "endtime":
+          this.couponInfo.endtime = value;
+      }
     }
   }
 };

@@ -340,7 +340,6 @@ export default {
                 useridList:useridList,
               }
             }).then(res=>{
-              console.log(res.data)
                if (res.data.result === "success") {
                   _that.getUserAllCount();
                 _that.$message({

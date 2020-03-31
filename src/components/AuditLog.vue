@@ -26,7 +26,7 @@
       ref="multipleTable"
       :data="auditLogDetailList"
       tooltip-effect="dark"
-      style="width:100% ;background-color:rgba(50, 67, 93, 1);"
+      style="width:100% ;"
       type="index"
       :default-sort="{prop: 'createtime',prop: 'goodsid' ,order: 'descending'}"
       @selection-change="handleSelectionChange"
@@ -215,8 +215,8 @@ export default {
           console.log(res.data);
           if(res.data.result === "success"){
           _that.$common.alertHint(_that,"衣优美丽服装提醒您","删除成功");
-          _that.getAuditLogDetailInfo();
-          _that.getAuditLogCount();
+         _that.getAuditLogCount();
+         _that.getAuditLogDetailInfo();
         }else{
           _that.$common.alertHint(_that,"衣优美服装提醒您","删除失败");
         }

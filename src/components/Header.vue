@@ -10,8 +10,14 @@
         <div class="logo-image-content-english" >YYMClothesBack-stage Management</div>
       </div>
       <div class="operate-box">
-          <div class="exit" @click = "exitLogin">退出</div>
-          <div class="welcome">欢迎 : <span>admin</span></div>
+            <div>
+                <el-badge :value="$store.state.problemBackCount" class="item">
+                <i class="el-icon-message" @click = "navigatorToProblemBackPage"></i>
+                </el-badge>
+            </div>
+            <div class="exit" @click = "exitLogin">退出</div>
+            <div class="welcome">欢迎 : <span>admin</span></div>
+         
       </div>
   </div>
 </template>
@@ -53,6 +59,9 @@ export default {
       } else {
         e.cancelBubble = true;
       }
+    },
+    navigatorToProblemBackPage(){
+      this.$router.push({path:"problemBack"})
     }
   }
 };
@@ -99,7 +108,18 @@ $color-font:#fff;
     .exit{
       cursor: pointer;
     }
-
-  }
+    .el-icon-message{
+      font-size:28px;
+      line-height: 3.78;
+      cursor: pointer;
+    }
+ }
 }
+</style>
+<style lang="scss">
+ .operate-box{
+    .el-badge__content.is-fixed{
+      top: 41px !important;
+    }
+  }
 </style>

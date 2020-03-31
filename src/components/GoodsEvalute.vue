@@ -26,7 +26,7 @@
       ref="multipleTable"
       :data="evaluteDetailList"
       tooltip-effect="dark"
-      style="width:100% ;background-color:rgba(50, 67, 93, 1);"
+      style="width:100% ;"
       type="index"
       :default-sort="{prop: 'createtime',prop: 'goodsid' ,order: 'descending'}"
       @selection-change="handleSelectionChange"

@@ -37,15 +37,11 @@ var URL= {
      searchGoodsSaleNumType:"/searchGoodsSaleNumType",
      searchGoodsSaleNumSize:"/searchGoodsSaleNumSize",
      getAllGoodsId:"/getAllGoodsId",
- 
-     addCouponInfo:"/addCouponInfo"  //优惠券管理中add接口
+     addCouponInfo:"/addCouponInfo" , //优惠券管理中add接口
+     getProblemBackCount:"/getProblemBackCount",
+     getProblemBackInfo:"/getProblemBackInfo",
+     deleteProblemBackInfo:"/deleteProblemBackInfo"
      
-
-
-
-
-
-
 
     
 }
